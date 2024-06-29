@@ -1,0 +1,68 @@
+pipeline {
+    agent {
+        kubernetes {
+            yamlFile 'jenkins/runner.yaml'
+            defaultContainer 'builder'
+        }
+    }
+
+    environment {
+        DOCKER_IMAGE = 'adi253/devopsbank-app'
+        DOCKERHUB_URL = 'https://registry.hub.docker.com'
+        GITHUB_API_URL = 'https://api.github.com'
+        GITHUB_REPO = 'adicohen253/devopsbank'
+    }
+
+    stages {
+        stage("Checkout code") {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage("Build docker image") {
+            steps {
+                script {
+                    dockerImage = docker.build("${DOCKER_IMAGE}:latest", "--no-cache .")
+                }
+            }
+        }
+
+        stage('Push Docker image') {
+            when {
+                branch 'main'
+            }
+            steps {
+                script {
+                    docker.withRegistry(DOCKERHUB_URL, 'DockerHub-cred') {
+                        dockerImage.push("latest")
+                    }
+                }
+            }
+        }
+
+        stage('Create merge request') {
+    when {
+        not {
+            branch 'main'
+        }
+    }
+    steps {
+        withCredentials([usernamePassword(credentialsId: 'GitHub-cred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+            script {
+                def branchName = env.BRANCH_NAME
+                def pullRequestTitle = "Merge ${branchName} into main"
+                def pullRequestBody = "Automatically generated merge request for branch ${branchName} from Jenkins"
+
+                sh """
+                    curl -X POST -u ${PASSWORD}:x-oauth-basic \
+                    -d '{ "title": "${pullRequestTitle}", "body": "${pullRequestBody}", "head": "${branchName}", "base": "main" }' \
+                    ${GITHUB_API_URL}/repos/${GITHUB_REPO}/pulls
+                """
+            }
+        }
+    }
+}
+
+    }
+}
