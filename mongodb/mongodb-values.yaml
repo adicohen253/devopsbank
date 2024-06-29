@@ -1,0 +1,9 @@
+architecture: standalone
+auth:
+  rootPassword: "212928139"
+  usernames:
+    - bank-app
+  passwords:
+    - 634dfg35bw4gx
+  databases:
+    - devopsbank

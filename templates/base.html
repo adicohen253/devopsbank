@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Devops Bank</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="icon" href="static/images/favicon.ico" type="image/x-icon">
+
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/css/aos.css">
+    <link rel="stylesheet" href="static/css/templatemo-digital-trend.css">
+
+</head>
+<body>
+
+     <!-- MENU BAR -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+              <i class="fa fa-line-chart"></i>
+              Devops Bank
+            </a>
+
+            <div id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a href="/" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="login" class="nav-link">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="signup" class="nav-link">Signup</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+     <!-- HERO -->
+     <section class="hero hero-bg d-flex justify-content-center align-items-center">
+        {% block content %}
+        {% endblock %}
+     </section>
+
+
+    
+
+
+     <!-- SCRIPTS -->
+     <script src="static/js/jquery.min.js"></script>
+     <script src="static/js/aos.js"></script>
+     <script src="static/js/custom.js"></script>
+</body>
+</html>
