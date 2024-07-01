@@ -64,7 +64,6 @@ https://templatemo.com/tm-538-digital-trend
     font-family: var(--base-font-family);
   }
 
-
   /*---------------------------------------
      TYPOGRAPHY              
   -----------------------------------------*/
@@ -201,19 +200,6 @@ https://templatemo.com/tm-538-digital-trend
     background: var(--secondary-color);
     color: var(--white-color);
   }
-
-  .section-padding {
-    padding: 8em 0;
-  }
-  .section-padding-half {
-    padding: 4em 0;
-  }
-
-  .google-map iframe {
-    display: block;
-    width: 100%;
-  }
-
 
 
   /*---------------------------------------
@@ -357,6 +343,10 @@ https://templatemo.com/tm-538-digital-trend
   }
 
 
+  /*---------------------------------------
+     Login + signup             
+  -----------------------------------------*/
+
 .input-block {
   background-color: #f5f5f5;
   padding: 20px;
@@ -384,4 +374,90 @@ https://templatemo.com/tm-538-digital-trend
 
 .input-block p a:hover {
   text-decoration: underline;
+}
+
+
+  /*---------------------------------------
+     Actions            
+  -----------------------------------------*/
+
+
+    
+.welcome-user {
+  font-size: 36px;       /* Makes the title big */
+  color: rgb(255, 255, 255);          /* Sets the text color to white */
+  background: none;      /* Ensures there's no background */
+  font-weight: bold;     /* Makes the text bold */
+  text-align: center;    /* Centers the text */    /* Adds some vertical margin */
+  padding: 0;
+}
+
+/* Enhancing the .actions-block container */
+.actions-block {
+  background-color: #e0f7fa;  /* Light cyan background color */
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 10px;  /* More rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Stronger shadow for more depth */
+  display: flex;  /* Flexbox for alignment */
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;  /* Center items vertically and stack them */
+}
+
+.positive-balance {
+  color: rgb(0, 255, 0);
+}
+
+.non-positive-balance {
+  color: red;
+}
+
+/* Styling the input elements */
+.actions-block input[type="text"] {
+  margin: 20px 0;  /* Vertical margin for spacing */
+  padding: 10px;  /* Padding for more space inside the input */
+  border: 1px solid #b0bec5;  /* Light gray border */
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* Subtle shadow for depth */
+  transition: box-shadow 0.3s ease;  /* Smooth transition for shadow */
+}
+
+/* Hover effect for input elements */
+.actions-block input[type="number"]:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Increase shadow on hover */
+}
+
+/* Styling the button elements */
+.actions-block button {
+  margin-top: 10px;  /* Margin on top for spacing */
+  padding: 10px 20px;  /* Padding for better button size */
+  background-color: #00796b;  /* Teal background color */
+  color: white;  /* White text color */
+  border: none;  /* No border */
+  border-radius: 5px;  /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* Subtle shadow */
+  cursor: pointer;  /* Pointer cursor on hover */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;  /* Smooth transitions */
+}
+
+/* Hover effect for button elements */
+.actions-block button:hover {
+  background-color: #000000;  /* Darker teal on hover */
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);  /* Increase shadow on hover */
+}
+
+/* Optional: Styling for focus state of input elements */
+.actions-block input[type="number"]:focus {
+  outline: none;  /* Remove default outline */
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);  /* Blue glow on focus */
+}
+
+canvas {
+  background-color: #ffeeee;
+  width: 75%;
+  display: block;
+  margin: 0 auto;
+  padding: 20px;
+  height: 400px;
 }
