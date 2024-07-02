@@ -1,0 +1,7 @@
+replicas: 3
+name: devopsbank
+image:
+  version: "latest"
+port: 5000
+service:
+  type: ClusterIP
