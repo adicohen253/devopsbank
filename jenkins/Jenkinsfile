@@ -1,68 +1,182 @@
-pipeline {
-    agent {
-        kubernetes {
+pipeline 
+{
+    agent 
+    {
+        kubernetes 
+        {
             yamlFile 'jenkins/runner.yaml'
             defaultContainer 'builder'
         }
     }
 
-    environment {
-        DOCKER_IMAGE = 'adi253/devopsbank-app'
+    environment 
+    {
+        DOCKER_IMAGE = 'adi253/devopsbank-app' // Docker repo
         DOCKERHUB_URL = 'https://registry.hub.docker.com'
-        GITHUB_API_URL = 'https://api.github.com'
+        GITHUB_API_URL = 'https://api.github.com' // for pull requests
         GITHUB_REPO = 'adicohen253/devopsbank'
+        HELM_CHART_PATH = 'devopsbank-chart/'
+        COMMIT_MESSAGE = "Updated chart image version by jenkins to 1.0.${env.buildNumber} [skip-ci]"
+        JENKINS_IDENTIFIER = '[skip-ci]'
     }
 
-    stages {
-        stage("Checkout code") {
-            steps {
+    stages 
+    {
+        stage("Checkout code") 
+        {
+            steps 
+            {
                 checkout scm
             }
         }
 
-        stage("Build docker image") {
-            steps {
-                script {
-                    dockerImage = docker.build("${DOCKER_IMAGE}:latest", "--no-cache .")
-                }
-            }
-        }
-
-        stage('Push Docker image') {
-            when {
+        stage('Check Commit Message') 
+        {
+            when
+            {
                 branch 'main'
             }
-            steps {
-                script {
-                    docker.withRegistry(DOCKERHUB_URL, 'DockerHub-cred') {
-                        dockerImage.push("latest")
+            steps 
+            {
+                script 
+                {
+                    def skipBuild = false
+                    def changeLog = currentBuild.changeSets
+
+                    // Iterate through all changesets in the current build
+                    for (int i = 0; i < changeLog.size(); i++) {
+                        def entries = changeLog[i].items
+                        for (int j = 0; j < entries.size(); j++) {
+                            def entry = entries[j]
+                            if (entry.msg.contains(JENKINS_IDENTIFIER)) {
+                                skipBuild = true
+                                break
+                            }
+                        }
+                        if (skipBuild) {
+                            break
+                        }
+                    }
+
+                    // Skip the build if 'skipBuild' is true
+                    if (skipBuild) {
+                        echo "Skipping build, commit was done by jenkins itself[skip-ci]'"
+                        currentBuild.result = 'SUCCESS'
+                        return
                     }
                 }
             }
         }
 
-        stage('Create merge request') {
-    when {
-        not {
-            branch 'main'
-        }
-    }
-    steps {
-        withCredentials([usernamePassword(credentialsId: 'GitHub-cred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-            script {
-                def branchName = env.BRANCH_NAME
-                def pullRequestTitle = "Merge ${branchName} into main"
-                def pullRequestBody = "Automatically generated merge request for branch ${branchName} from Jenkins"
-
-                sh """
-                    curl -X POST -u ${PASSWORD}:x-oauth-basic \
-                    -d '{ "title": "${pullRequestTitle}", "body": "${pullRequestBody}", "head": "${branchName}", "base": "main" }' \
-                    ${GITHUB_API_URL}/repos/${GITHUB_REPO}/pulls
-                """
+        stage("Build docker image") 
+        {
+            steps 
+            {
+                script 
+                {
+                    dockerImage = docker.build("${DOCKER_IMAGE}:latest", "--no-cache .")
+                }
             }
         }
-    }
-}
 
+        stage('Create merge request') 
+        {
+            when 
+            {
+                not 
+                {
+                    branch 'main'
+                }
+            }
+            steps 
+            {
+                withCredentials([usernamePassword(credentialsId: 'GitHub-cred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) 
+                {
+                    script 
+                    {
+                        def branchName = env.BRANCH_NAME
+                        def pullRequestTitle = "Merge ${branchName} into main"
+                        def pullRequestBody = "Automatically generated merge request for branch ${branchName} from Jenkins"
+
+                        sh """
+                            curl -X POST -u ${PASSWORD}:x-oauth-basic \
+                            -d '{ "title": "${pullRequestTitle}", "body": "${pullRequestBody}", "head": "${branchName}", "base": "main" }' \
+                            ${GITHUB_API_URL}/repos/${GITHUB_REPO}/pulls
+                        """
+                    }
+                }
+            }
+        }
+
+
+        stage("Tag docker image")
+        {
+            when
+            {
+                branch 'main'
+            }
+            steps
+            {
+                script
+                { 
+                    dockerImage.tag("${DOCKER_IMAGE}:1.0.${env.buildNumber}")
+                }
+            }
+        }
+
+        stage('Push Docker image') 
+        {
+            when 
+            {
+                branch 'main'
+            }
+            steps 
+            {
+                script 
+                {
+                    docker.withRegistry(DOCKERHUB_URL, 'DockerHub-cred') 
+                    {
+                        dockerImage.push("latest")
+                        dockerImage.push("1.0.${buildNumber}")
+                    }
+                }
+            }
+        }
+
+        stage('Update helm chart')
+        {
+            when
+            {
+                branch 'main'
+            }
+            steps
+            {
+                script 
+                {
+                    sh "sed -i 's/version:.*/version: 1.0.${env.BUILD_NUMBER}/' devopsbank-chart/values.yaml"
+                    echo "Helm chart updated to version 1.0.${env.BUILD_NUMBER}"
+                    
+                }
+            }
+        }
+
+        stage('Commit and Push Changes') 
+        {
+             when
+            {
+                branch 'main'
+            }
+            steps {
+                script {
+                    sh """
+                        git config user.name 'jenkins'
+                        git config user.email 'jenkins@example.com'
+                        git add path/to/helm/chart
+                        git commit -m ${COMMIT_MESSAGE}
+                        git push origin main
+                    """
+                }
+            }
+        }
     }
 }
