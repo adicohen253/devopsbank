@@ -154,6 +154,7 @@ pipeline
                     dir("${workspace}") {
                         // Set git config and perform git operations
                         sh """
+                            ls
                             git config user.name 'jenkins'
                             git config user.email 'jenkins@example.com'
                             git add .
