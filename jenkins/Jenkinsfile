@@ -74,7 +74,7 @@ pipeline
             {
                 script 
                 {
-                    dockerImage = docker.build("${DOCKER_IMAGE}:latest", "--no-cache .")
+                    dockerImage = docker.build("${DOCKER_IMAGE}:1.0.${env.buildNumber}", "--no-cache .")
                 }
             }
         }
@@ -108,22 +108,6 @@ pipeline
             }
         }
 
-
-        stage("Tag docker image")
-        {
-            when
-            {
-                branch 'main'
-            }
-            steps
-            {
-                script
-                { 
-                    dockerImage.tag("${DOCKER_IMAGE}:1.0.${env.buildNumber}")
-                }
-            }
-        }
-
         stage('Push Docker image') 
         {
             when 
@@ -136,7 +120,6 @@ pipeline
                 {
                     docker.withRegistry(DOCKERHUB_URL, 'DockerHub-cred') 
                     {
-                        dockerImage.push("latest")
                         dockerImage.push("1.0.${buildNumber}")
                     }
                 }
