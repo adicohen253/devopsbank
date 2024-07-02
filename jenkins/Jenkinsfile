@@ -16,7 +16,7 @@ pipeline
         GITHUB_API_URL = 'https://api.github.com' // for pull requests
         GITHUB_REPO = 'adicohen253/devopsbank'
         HELM_CHART_PATH = 'devopsbank-chart/'
-        COMMIT_MESSAGE = "Updated chart image version by jenkins to 1.0.${env.buildNumber} [skip-ci]"
+        COMMIT_MESSAGE = "Updated chart image version by jenkins to 1.0.${env.BUILD_NUMBER} [skip-ci]"
         JENKINS_IDENTIFIER = '[skip-ci]'
     }
 
@@ -74,7 +74,7 @@ pipeline
             {
                 script 
                 {
-                    dockerImage = docker.build("${DOCKER_IMAGE}:1.0.${env.buildNumber}", "--no-cache .")
+                    dockerImage = docker.build("${DOCKER_IMAGE}:1.0.${env.BUILD_NUMBER}", "--no-cache .")
                 }
             }
         }
@@ -120,7 +120,7 @@ pipeline
                 {
                     docker.withRegistry(DOCKERHUB_URL, 'DockerHub-cred') 
                     {
-                        dockerImage.push("1.0.${buildNumber}")
+                        dockerImage.push("1.0.${BUILD_NUMBER}")
                     }
                 }
             }
