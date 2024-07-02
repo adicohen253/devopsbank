@@ -69,7 +69,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry(DOCKERHUB_URL, 'DockerHub-cred') {
-                        dockerImage.push("latest")
+                        dockerImage.push(${env.BUILD_NUMBER})
                     }
                 }
             }
