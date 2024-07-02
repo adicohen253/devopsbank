@@ -151,14 +151,16 @@ pipeline
             }
             steps {
                 script {
-                    sh """
-                        git config user.name 'jenkins'
-                        git config user.email 'jenkins@example.com'
-                        git add path/to/helm/chart
-                        git commit -m ${COMMIT_MESSAGE}
-                        git push origin main
-                    """
-                }
+                    dir("${workspace}") {
+                        // Set git config and perform git operations
+                        sh """
+                            git config user.name 'jenkins'
+                            git config user.email 'jenkins@example.com'
+                            git add .
+                            git commit -m "${COMMIT_MESSAGE}"
+                            git push origin main
+                        """
+                    }
             }
         }
     }
