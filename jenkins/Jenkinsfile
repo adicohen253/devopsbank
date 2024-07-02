@@ -28,7 +28,7 @@ pipeline {
         stage("Build docker image") {
             steps {
                 script {
-                    dockerImage = docker.build("${DOCKER_IMAGE}:${env.BUILD_NUMBER}", "--no-cache .")
+                    dockerImage = docker.build("${DOCKER_IMAGE}:1.0.${env.BUILD_NUMBER}", "--no-cache .")
                 }
             }
         }
