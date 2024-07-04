@@ -8,10 +8,15 @@
 
         <div class="col-lg-6 col-md-10 col-12 d-flex flex-column justify-content-center align-items-center">
               <div class="hero-text">
-
-                   <h1 class="text-white" data-aos="fade-up">Join our DevOps Bank today and enjoy secure banking services!</h1>
-
-                   <a href="/signup" class="custom-btn btn-bg btn mt-3" data-aos="fade-up" data-aos-delay="100">Signup</a>
+                    {% if not username %}
+                      <h1 class="text-white" data-aos="fade-up">Join our DevOps Bank today and enjoy secure banking services!</h1>
+                      <a href="/login" class="custom-btn btn-bg btn mt-3" data-aos="fade-up" data-aos-delay="100">Login</a>
+                      <a href="/signup" class="custom-btn btn-bg btn mt-3" data-aos="fade-up" data-aos-delay="100">Signup</a>
+                    {% else %}
+                      <h1 class="text-white" data-aos="fade-up">Welcome back {{ username }}</h1>
+                      <p class="text-white" data-aos="fade-up">To watch your balance and your transactions click here</p>
+                      <a href="/actions" class="custom-btn btn-bg btn mt-3" data-aos="fade-up" data-aos-delay="100">Go to Actions</a>
+                   {% endif %}
               </div>
         </div>
 

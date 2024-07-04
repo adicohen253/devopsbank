@@ -32,18 +32,30 @@
                     <li class="nav-item">
                         <a href="/" class="nav-link">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a href="login" class="nav-link">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="signup" class="nav-link">Signup</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="actions" class="nav-link">Actions</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="logout" class="nav-link">Logout</a>
-                    </li>
+
+                    {% if not username %}
+                        <li class="nav-item">
+                            <a href="login" class="nav-link">Login</a>
+                        </li>
+                    {% endif %}
+
+                    {% if not username %}
+                        <li class="nav-item">
+                            <a href="signup" class="nav-link">Signup</a>
+                        </li>
+                    {% endif %}
+                    
+                    {% if username %}
+                        <li class="nav-item">
+                            <a href="actions" class="nav-link">Actions</a>
+                        </li>
+                    {% endif %}
+                    
+                    {% if username %}
+                        <li class="nav-item">
+                            <a href="logout" class="nav-link">Logout</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

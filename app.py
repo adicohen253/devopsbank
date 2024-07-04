@@ -23,7 +23,10 @@ class DevopsApplication:
     def create_endpoints(self):
         @self.app.route('/')
         def home():
-            return render_template("index.html")
+            username = ""
+            if 'username' in session:
+                username = session['username']
+            return render_template("index.html", username=username)
 
         @self.app.route('/logout')
         def logout():
