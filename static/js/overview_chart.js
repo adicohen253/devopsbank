@@ -14,6 +14,14 @@ values = sortedData.map(item => item.total);
 // Find the maximum absolute value to set symmetric axis
 var maxAbs = Math.max(...values.map(Math.abs));
 
+// Function to round up to the nearest multiple of 50
+function roundUpToNearestMultiple(value, multiple) {
+    return Math.ceil(value / multiple) * multiple;
+}
+
+// Calculate the max value for the y-axis rounded up to the nearest 50
+var maxYAxisValue = roundUpToNearestMultiple(maxAbs, 100);
+
 // Chart.js configuration
 var ctx = document.getElementById('myChart').getContext('2d');
 var myChart = new Chart(ctx, {
@@ -31,7 +39,8 @@ var myChart = new Chart(ctx, {
         plugins: {
             legend: {
                 display: false
-            }},
+            }
+        },
         scales: {
             x: {
                 grid: {
@@ -43,8 +52,11 @@ var myChart = new Chart(ctx, {
                 }
             },
             y: {
-                min: -maxAbs,  // Ensure the minimum y-axis value is negative of maximum absolute value
-                max: maxAbs,   // Ensure the maximum y-axis value is positive of maximum absolute value
+                min: -maxYAxisValue,  // Ensure the minimum y-axis value is negative of the rounded max value
+                max: maxYAxisValue,   // Ensure the maximum y-axis value is the rounded max value
+                ticks: {
+                    stepSize: 50 // Set the step size for the y-axis ticks
+                },
                 grid: {
                     display: true
                 },
