@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devopsbank
+  namespace: argocd
+spec:
+  project: default
+
+  # Source of the manifests (e.g., a Git repository)
+  source:
+    repoURL: https://github.com/adicohen253/devopsbank-chart
+    targetRevision: HEAD
+    path: devopsbank
+
+  # Destination cluster and namespace
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  # Sync policy
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
