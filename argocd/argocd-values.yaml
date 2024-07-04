@@ -1,0 +1,5 @@
+configs:
+  secret:
+    argocdServerAdminPassword: $2a$12$S11clGYt3xCCNgXPjBY1HeQaucmzU2MYgZyFs.m7yxbyMjJi/oP0a
+  cm:
+    timeout.reconciliation: 60s
