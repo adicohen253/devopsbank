@@ -25,6 +25,25 @@ pipeline {
             }
         }
 
+        stage("setup tests")
+        {
+            steps
+            {
+                sh "apk update && apk add py3-pytest py-pip"
+
+                sh "pip install -r requirements.txt -r tests/requirements.txt"
+            }
+        }
+
+
+        stage("run tests")
+        {
+            steps
+            {
+                sh "pytest --cov"
+            }
+        }
+
         stage("Build docker image") {
             steps {
                 script {

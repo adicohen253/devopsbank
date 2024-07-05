@@ -6,3 +6,7 @@ tests
 argocd
 mongodb
 jenkins
+__pycache__
+.pytest_cache
+.coverage
+htmlcov
