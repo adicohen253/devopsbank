@@ -32,18 +32,18 @@ class DevopsApplication:
         def logout():
             if 'username' in session:
                 session.pop('username')
+                return redirect(url_for("login"))
             return redirect(url_for('home'))
         
         @self.app.route('/actions', methods=['GET', 'POST'])
         def actions():
             if 'username' not in session:
-                return redirect(url_for('login'))
-
+                return redirect(url_for('home'))
             username = session['username']
             balance = self.dbclient.accounts.find_one({'username': session['username']}).get('balance')
             monthly_overview = overall_monthly(username, datetime.now().strftime("%m/%Y"))
             if request.method == 'POST':
-                action, amount = request.form['action'], float(request.form['amount'])
+                action, amount = request.form.get('action'), float(request.form.get('amount'))
                 balance = calculate_balance(balance, amount, action)
                 self.dbclient.accounts.update_one({"username": username}, {"$set": {"balance": balance}})
                 update_history(username, amount, action, datetime.now().strftime("%d/%m/%Y"))
@@ -54,7 +54,7 @@ class DevopsApplication:
         @self.app.route('/signup', methods=['GET', 'POST'])
         def signup():
             if 'username' in session:
-                return redirect(url_for('actions'))
+                return redirect(url_for('home'))
             if request.method == 'GET':
                 return render_template("signup.html")   
             else: # POST request
@@ -71,7 +71,7 @@ class DevopsApplication:
         @self.app.route('/login', methods=['GET', 'POST'])
         def login():
             if 'username' in session:
-                return redirect(url_for('actions'))
+                return redirect(url_for('home'))
             if request.method == 'GET':
                 return render_template("login.html")
             else: # POST request
