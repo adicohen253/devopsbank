@@ -94,6 +94,17 @@ pipeline {
             }
         }
 
+        stage('Clean Workspace') {
+            when 
+            {
+                branch 'main'
+            }
+            steps 
+            {
+                cleanWs()
+            }
+        }
+
         stage('Checkout Helm Chart Repo') 
         {
             when
