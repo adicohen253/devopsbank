@@ -7,6 +7,11 @@
             Hello {{username}} Current balance<br><span id="balance">{{balance}}$</span>
         </div>
         <div class="actions-block"  data-aos="fade-up">
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    <span id="error" >{{ error }}</span>
+                </div>
+            {% endif %}
             <form method='POST'>
                 <input type="text" inputmode="decimal" pattern="^[0-9]+([.,][0-9]{1,2})?$" id="amount" name="amount" placeholder="Enter amount" required>
                 <button type="submit" name="action" value="deposit">Deposit</button>
@@ -21,8 +26,6 @@
 
 <!-- Include custom JavaScript files -->
 <script src="static/js/balance.js"></script>
-<script>
-    var overview = {{ overview | tojson | safe }};
-</script>
+<script id="overview-data">var overview = {{ overview | tojson | safe }};</script>
 <script src="static/js/overview_chart.js"></script>
 {% endblock %}

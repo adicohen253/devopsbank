@@ -29,7 +29,7 @@ pipeline {
         {
             steps
             {
-                sh "apk update && apk add py3-pytest py-pip"
+                sh "apk update && apk add py-pip"
 
                 sh "pip install -r requirements.txt -r tests/requirements.txt"
             }

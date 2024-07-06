@@ -20,7 +20,7 @@ document.getElementById('amount').addEventListener('input', function(event) {
     const errorMessageElement = document.getElementById('error-message');
 
     if (!pattern.test(amountInput.value)) {
-        amountInput.setCustomValidity('Please enter a valid amount with up to two decimal places.');
+        amountInput.setCustomValidity('Please enter a valid number up to two decimal digits.');
     } else {
         amountInput.setCustomValidity('');
         errorMessageElement.textContent = '';
