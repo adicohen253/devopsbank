@@ -3,6 +3,8 @@ from pymongo import MongoClient
 from os import environ
 from datetime import datetime
 from dotenv import load_dotenv
+from flask_session import Session
+from flask_pymongo import PyMongo
 from re import match
 
 load_dotenv()
@@ -30,10 +32,15 @@ INVALID_LOGIN_REQUEST = "Invalid username or password"
 USERNAME_TAKEN = "This username is already taken please pick another"
 
 class DevopsApplication:
-    def __init__(self, client):
+    def __init__(self, client, db, session_key, use_backend_session):
         self.app = Flask(__name__)
-        self.app.secret_key = SESSION_KEY
-        self.dbclient = client
+        self.app.secret_key = session_key
+        self.dbclient = client[db]
+        if use_backend_session:
+            self.app.config['SESSION_TYPE'] = 'mongodb'
+            self.app.config['SESSION_MONGODB'] = client
+            self.app.config['SESSION_MONGODB_DB'] = db
+            Session(self.app)
 
     def create_endpoints(self):
         """Creates the necessary endpoints for the application."""
@@ -204,7 +211,7 @@ class DevopsApplication:
         self.app.run(host="0.0.0.0", port="5000",debug=True)
 
 if __name__ == '__main__':
-    client = MongoClient(MONGODB_URI)[MONGODB_DATABASE]
-    app = DevopsApplication(client)
+    client = MongoClient(MONGODB_URI)
+    app = DevopsApplication(client, MONGODB_DATABASE, SESSION_KEY, True)
     app.start()
     
