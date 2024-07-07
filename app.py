@@ -4,7 +4,6 @@ from os import environ
 from datetime import datetime
 from dotenv import load_dotenv
 from flask_session import Session
-from flask_pymongo import PyMongo
 from re import match
 
 load_dotenv()
