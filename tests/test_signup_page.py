@@ -6,9 +6,10 @@ def test_signup_page_get(client):
         - AssertionError: If status code is not 200 (Ok) or the response data doesn't contains the "Sign up" message
     """
     response = client.get('/signup')
+    login_title = BeautifulSoup(response.data, 'html.parser').find("h1", id='signup-title')
     assert response.status_code == 200
-    assert b"Sign up" in response.data
-
+    assert login_title.text == "Sign up"
+    
 def test_signup_page_post_valid_user(client):
     """Tests the POST request to the '/signup' endpoint with valid user data
        Raises:
