@@ -44,10 +44,11 @@ def set_user(setup_client_db):
     
 @pytest.fixture
 def set_history(setup_client_db):
+    username = "testuser"
     """Sets up a mock history of transactions for a user in the mock MongoDB"""
     db_client = setup_client_db[TestConfig.DB]
     transactions_data = {
-        "username" : 'testuser',
+        "username" : username,
         "history": [
             {
             "action": "deposit",
@@ -66,6 +67,7 @@ def set_history(setup_client_db):
             }
         ]
     }
+    db_client.accounts.update_one({"username": username}, {"$set": {"balance": 180.45}})
     db_client.transactions.insert_one(transactions_data)
     yield
     db_client.transactions.delete_many({})

@@ -20,7 +20,26 @@
         </div>
     </div>
 </section>
-<canvas id="myChart"></canvas>
+<div class="chart-container" data-aos="fade-up">
+    <p class="chart-title">Financial Activity Summary: Monthly overview</p>
+    <div class="chart-block">
+      <canvas id="myChart"></canvas>
+    </div>
+</div>
+
+<div class="stats-container">
+    <table class="stats-table">
+      <tr>
+        <td>Actions this month</td>
+        <td>Average actions per day</td>
+        <td>Average amount per action</td>
+      </tr>
+      <tr>
+        <td id="action-number">{{ stats[0] }}</td>
+        <td id="avg-actions-per-day">{{ stats[1] }}</td>
+        <td id="avg-amount-per-action">{{ stats[2] }}</td>
+    </table>
+  </div>
 <!-- Include Chart.js and plugins -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

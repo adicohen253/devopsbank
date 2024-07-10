@@ -2,11 +2,12 @@ from bs4 import BeautifulSoup
 def test_login_page_get(client):
     """Tests the login page GET request
        Raises:
-        - AssertionError: If status code is not 200 (Ok) or the response data doesn't contains the "Login" message
+        - AssertionError: If status code is not 200 (Ok) or the response data doesn't contains the "Login" title
     """
     response = client.get('/login')
+    login_title = BeautifulSoup(response.data, 'html.parser').find("h1", id='login-title')
     assert response.status_code == 200
-    assert b"Login" in response.data 
+    assert login_title.text == "Login"
     
 def test_login_page_post_valid_user(client, set_user):
     """Tests the login page POST request with valid user credentials

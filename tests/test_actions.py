@@ -2,33 +2,45 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 
 def test_actions_page_get(client, set_user, set_history):
-    """Tests the '/actions' page by logging in as a user, it then checks if the balance and monthly overview displayed on the page are correct
+    """Tests the '/actions' page by logging in as a user, Then checks if the balance, monthly overview and stats displayed on the page are correct
        Raises:
-        - AssertionError: If the balance or overview data is incorrect
+        - AssertionError: If the balance, overview or stats is incorrect
     """
     client.post('/login', data={'username': 'testuser', 'password': 'password123'})
     response = client.get('/actions')
     balance_span = BeautifulSoup(response.data, 'html.parser').find("span", id='balance')
     overview = str(BeautifulSoup(response.data, 'html.parser').find('script', id="overview-data"))
     overview = eval(overview[overview.index('[')+1:overview.index(']')])
+    action_number = BeautifulSoup(response.data, 'html.parser').find('td', id="action-number")
+    avg_actions_per_day = BeautifulSoup(response.data, 'html.parser').find('td', id="avg-actions-per-day")
+    avg_amount_per_action = BeautifulSoup(response.data, 'html.parser').find('td', id="avg-amount-per-action")
+    assert action_number.text == '3'
+    assert avg_actions_per_day.text == str((round(3 / datetime.today().day,1)))
+    assert avg_amount_per_action.text == "93.48"
     assert overview[0]['date'] == "01/" + datetime.now().strftime("%m/%Y")
     assert overview[1]['total'] == -19.55
-    assert balance_span.text == '0$'
+    assert balance_span.text == '180.45$'
     
 def test_actions_page_post_valid(client, set_user):
     """Tests the '/actions' page by logging in as a user, making deposit and withdraw actions.
        Then checks if the balance and monthly overview displayed on the page are correct
        Raises:
-        - AssertionError: If the balance or overview data is incorrect
+        - AssertionError: If the balance, overview or stats is incorrect
     """
-    client.post('/login', data={'username': 'testuser', 'password': 'password123'})
-    client.post('/actions', data={'action': 'deposit', 'amount': "200.12"})
-    client.post('/actions', data={'action': 'withdraw', 'amount': "100"})
+    response = client.post('/login', data={'username': 'testuser', 'password': 'password123'})
+    response = client.post('/actions', data={'action': 'deposit', 'amount': "200.12"})
+    response = client.post('/actions', data={'action': 'withdraw', 'amount': "100"})
     response = client.get('/actions')
     balance_span = str(BeautifulSoup(response.data, 'html.parser').find("span", id='balance'))
     balance = balance_span[balance_span.index(">")+1:balance_span.index("</")]
     overview = str(BeautifulSoup(response.data, 'html.parser').find('script', id="overview-data"))
     overview = eval(overview[overview.index('[')+1:overview.index(']')])
+    action_number = BeautifulSoup(response.data, 'html.parser').find('td', id="action-number")
+    avg_actions_per_day = BeautifulSoup(response.data, 'html.parser').find('td', id="avg-actions-per-day")
+    avg_amount_per_action = BeautifulSoup(response.data, 'html.parser').find('td', id="avg-amount-per-action")
+    assert action_number.text == '2'
+    assert avg_actions_per_day.text == str((round(2 / datetime.today().day,1)))
+    assert avg_amount_per_action.text == "150.06"
     assert overview['date'] == datetime.now().strftime(f"%d/%m/%Y")
     assert overview['total'] == 100.12
     assert balance == '100.12$'

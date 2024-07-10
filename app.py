@@ -67,6 +67,7 @@ class DevopsApplication:
             username = session['username']
             balance = self.dbclient.accounts.find_one({'username': session['username']}).get('balance')
             monthly_overview = overall_monthly(username, datetime.now().strftime("%m/%Y"))
+            stats = stats_monthly(username)
             error = None
             if request.method == 'POST':
                 action, amount = request.form.get('action'), request.form.get('amount')
@@ -81,7 +82,8 @@ class DevopsApplication:
                         error = INVALID_ACTION
                 else:
                     error = INVALID_AMOUNT
-            return render_template("actions.html", username=username, balance=balance, overview=monthly_overview, error=error)
+            return render_template("actions.html", username=username, balance=balance,
+                                   stats=stats, overview=monthly_overview, error=error)
             
         @self.app.route('/signup', methods=['GET', 'POST'])
         def signup():
@@ -123,6 +125,16 @@ class DevopsApplication:
             else: # withdraw
                 return round(balance - amount, 2)
             
+        def stats_monthly(username):
+            transaction_history = self.dbclient.transactions.find_one({"username": username}) 
+            if transaction_history is not None:
+                history = transaction_history['history']
+                actions_number_in_month = len(list(filter(lambda x: x['date'].endswith(datetime.now().strftime('/%m/%Y')), history)))
+                avg_actions_per_day = actions_number_in_month / datetime.today().day
+                avg_amount_per_action = round(sum(transaction['amount'] for transaction in history) / actions_number_in_month, 2)
+                return [actions_number_in_month, avg_actions_per_day, avg_amount_per_action]
+            return [0, 0, 0]
+            
         def overall_monthly(username, month_year):
             """Calculates the total amount deposited or withdrawn per day in a given month
                 Args:
@@ -150,10 +162,7 @@ class DevopsApplication:
             {"$project": {"_id": 0, "date": "$_id", "total": 1}}]
             overall_daily_list = list(self.dbclient.transactions.aggregate(pipeline))
             return overall_daily_list
-        
-            
-
-            
+             
         def update_history(username, amount, action, date):
             """Updates the transaction history with a new transaction.
                 Args:
