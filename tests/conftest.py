@@ -34,7 +34,7 @@ def set_user(setup_client_db):
     # Insert a mock user into the mock MongoDB
     user_data = {
         'username': 'testuser',
-        'password': 'password123',
+        'password': '$5$rounds=535000$igzncDdJFZ/9ukIa$7TZS9b/U4l7GQ1ARnnsu/UKxpQaeXcrZGIFJCcN7ax/',
         'email': 'test@example.com',
         'balance': 0
     }
