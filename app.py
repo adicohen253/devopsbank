@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session
 from pymongo import MongoClient
 from os import environ
 from datetime import datetime
@@ -130,7 +130,7 @@ class DevopsApplication:
             if transaction_history is not None:
                 history = transaction_history['history']
                 actions_number_in_month = len(list(filter(lambda x: x['date'].endswith(datetime.now().strftime('/%m/%Y')), history)))
-                avg_actions_per_day = actions_number_in_month / datetime.today().day
+                avg_actions_per_day = round(actions_number_in_month / datetime.today().day,1)
                 avg_amount_per_action = round(sum(transaction['amount'] for transaction in history) / actions_number_in_month, 2)
                 return [actions_number_in_month, avg_actions_per_day, avg_amount_per_action]
             return [0, 0, 0]
