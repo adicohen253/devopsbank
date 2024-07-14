@@ -5,6 +5,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 from flask_session import Session
 from re import match
+from passlib.context import CryptContext
 
 load_dotenv()
 MONGODB_HOSTNAME = environ.get('MONGODB_HOSTNAME')
@@ -35,6 +36,7 @@ class DevopsApplication:
         self.app = Flask(__name__)
         self.app.secret_key = session_key
         self.dbclient = client[db]
+        self.hashing = CryptContext(schemes=["sha256_crypt"])
         if use_backend_session:
             self.app.config['SESSION_TYPE'] = 'mongodb'
             self.app.config['SESSION_MONGODB'] = client
@@ -98,7 +100,7 @@ class DevopsApplication:
                 password = request.form.get('password')
                 error = check_signup_request(username, password, email)
                 if error is None: # can create new account
-                    self.dbclient.accounts.insert_one({"username": username, "email": email, "password": password, "balance": 0})
+                    self.dbclient.accounts.insert_one({"username": username, "email": email, "password": self.hashing.hash(password), "balance": 0})
                     session["username"] = username
                     return redirect(url_for('actions'))
                 return render_template("signup.html", error=error)
@@ -210,9 +212,12 @@ class DevopsApplication:
                 return USERNAME_RULE
             if not match(PASSWORD_CREDENTIALS_REGEX, password):
                 return PASSWORD_RULE
-            if self.dbclient.accounts.find_one({"username": username, "password":  password}) is None:
+            user = self.dbclient.accounts.find_one({"username": username})
+            if user is None:
                 return INVALID_LOGIN_REQUEST
-            return None
+            if self.hashing.verify(password, user['password']):
+                return None
+            return INVALID_LOGIN_REQUEST
     
     def start(self):
         self.create_endpoints()
