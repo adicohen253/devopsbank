@@ -1,0 +1,5 @@
+controller:
+  prometheus:
+    enabled: true
+    scrapeInterval: 30s
+    serviceMonitorAdditionalLabels: {release: prometheus}

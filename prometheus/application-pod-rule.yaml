@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: devopsbank-pods-count
+  namespace: monitoring
+  labels:
+    release: prometheus
+spec:
+  groups:
+  - name: "Devopsbank rules"
+    rules:
+    - alert: DevopsbankPodCount
+      expr: sum(kube_pod_status_phase{namespace="default", pod=~"devopsbank.*", phase="Running"}) < 3
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Applications pods number dropped from 3"
+        description: "There are less than 3 running pods of the devopsbank application"

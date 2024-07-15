@@ -7,3 +7,10 @@ auth:
     - 634dfg35bw4gx
   databases:
     - devopsbank
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    labels:
+      release: prometheus
