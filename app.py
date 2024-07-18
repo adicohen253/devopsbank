@@ -45,7 +45,7 @@ class DevopsApplication:
 
     def create_endpoints(self):
         """Creates the necessary endpoints for the application."""
-        #@self.app.route('/')
+        @self.app.route('/')
         def home():
             """Renders the home page"""
             username = ""
@@ -61,7 +61,7 @@ class DevopsApplication:
                 return redirect(url_for("login"))
             return redirect(url_for('home'))
         
-        @self.app.route('/actions', methods=['GET', 'POST'])
+        # @self.app.route('/actions', methods=['GET', 'POST'])
         def actions():
             """Handles the actions endpoint, where user can deposit/withdraw money and watch his history"""
             if 'username' not in session:
