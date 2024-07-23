@@ -57,10 +57,10 @@ and use the following commands to install the dependencies
    sh kubectl apply -f argocd/devopsbank.yaml
    
    ```
-5. **Prometheus stack**
+4. **Prometheus stack**
    ```
    helm repo add prometheus https://prometheus-community.github.io/helm-charts
-   helm install prometheus prometheus-community/kube-prometheus-stack --version 61.2.0
+   helm install prometheus prometheus-community/kube-prometheus-stack --version 61.2.0 -n monitoring
    ```
    After that apply the rule yaml file to let prometheus monitor and alert whenever the application's pod number is falling down from 3 pods:
    ```
